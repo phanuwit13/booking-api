@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId       String        @id @map("user_id")
+  username     String        @unique @map("username")
+  passwordHash String        @map("password_hash")
+  name         String        @map("name")
+  email        String        @map("email")
+  phoneNumber  String        @map("phone_number")
+  Reservation  Reservation[]
+
+  @@map("users")
+}
+
+model Room {
+  roomId        String        @id @map("room_id")
+  roomNumber    String        @unique @map("room_number")
+  roomType      String        @map("room_type")
+  capacity      Int           @map("capacity")
+  pricePerNight Float         @map("price_per_night")
+  description   String        @map("description")
+  Reservation   Reservation[]
+
+  @@map("rooms")
+}
+
+model Reservation {
+  reservationId String   @id @map(name: "reservation_id")
+  roomId        String   @map(name: "room_id")
+  userId        String   @map(name: "user_id")
+  checkinDate   DateTime @map(name: "checkin_date")
+  checkoutDate  DateTime @map(name: "checkout_date")
+  createdAt     DateTime @map(name: "created_at")
+
+  // Foreign keys
+  room Room @relation(fields: [roomId], references: [roomId])
+  user User @relation(fields: [userId], references: [userId])
+
+  @@map(name: "reservations")
+}
