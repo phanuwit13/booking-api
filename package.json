@@ -29,7 +29,6 @@
     "pino": "^8.19.0",
     "pino-pretty": "^11.0.0",
     "prisma": "^5.11.0",
-    "swagger-ui-express": "^5.0.0",
     "uuidv7": "^0.6.3"
   },
   "devDependencies": {
