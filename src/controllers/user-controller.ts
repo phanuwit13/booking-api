@@ -1,14 +1,12 @@
 import { Response, Request, NextFunction } from 'express'
 import { UserService } from '../services/user-service'
-import { updateUserValidation } from '../validation/user-validation'
-import { logger } from '../utils/logger'
 
 export const UserController = {
   GETUSER: async (req: Request, res: Response, next: NextFunction) => {
     const {
-      params: { id },
-    } = req
-    // const { query } = req
+      locals: { user },
+    } = res
+    const id  = user.userId
     try {
       if (id) {
         const user = await UserService.getUserById(id)

@@ -5,6 +5,9 @@ export type ReservationResponse = {
   checkinDate: Date
   checkoutDate: Date
   createdAt: Date
+  otherName: string
+  otherPhone: string
+  otherEmail: string
 }
 
 export type ReservationRequest = {
@@ -14,4 +17,13 @@ export type ReservationRequest = {
   checkinDate: Date
   checkoutDate: Date
   createdAt: Date
+  otherName: string
+  otherPhone: string
+  otherEmail: string
+}
+
+export type DateResponse = {
+  start: string
+  count: number
+  isFull: boolean
 }

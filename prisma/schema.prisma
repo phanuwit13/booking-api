@@ -44,6 +44,9 @@ model Reservation {
   checkinDate   DateTime @map(name: "checkin_date")
   checkoutDate  DateTime @map(name: "checkout_date")
   createdAt     DateTime @map(name: "created_at")
+  otherName   String   @map(name: "other_name")
+  otherPhone  String   @map(name: "other_phone")
+  otherEmail  String   @map(name: "other_email")
 
   // Foreign keys
   room Room @relation(fields: [roomId], references: [roomId])

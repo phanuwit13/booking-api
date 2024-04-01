@@ -3,6 +3,7 @@ import { prisma } from '../db/prisma'
 import { RoomQuery, RoomResponse } from '../model/room-model'
 import { logger } from '../utils/logger'
 import { pageAble, pagination } from '../model/pagination'
+import dayjs from 'dayjs'
 
 export const RoomService = {
   getAllRooms: async (query: RoomQuery): Promise<pageAble<RoomResponse>> => {
@@ -57,66 +58,41 @@ export const RoomService = {
       return null
     }
   },
-  // createProduct: async (data: ProductRequest): Promise<ProductResponse | null> => {
-  //     try {
-  //         const existingProduct = await prisma.product.findFirst({
-  //             where: {
-  //                 name: data.name,
-  //             },
-  //         });
-  //         if (existingProduct) {
-  //             return null;
-  //         }
-  //         const newProduct = await prisma.product.create({ data });
-  //         return newProduct;
-  //     } catch (error) {
-  //         logger.error(error)
-  //         return null
-  //     } finally {
-  //         await prisma.$disconnect();
-  //     }
-  // },
-  // deleteProduct: async (id: string): Promise<ProductResponse | null> => {
-  //     try {
-  //         const product = await prisma.product.delete({
-  //             where: { id: id },
-  //         });
-  //         return product;
-  //     } catch (error) {
-  //         logger.error(error)
-  //         return null;
-  //     } finally {
-  //         await prisma.$disconnect();
-  //     }
-  // },
-  // updateProduct: async (id: string, data: ProductRequest): Promise<ProductResponse | null> => {
-  //     try {
-  //         const existingProduct = await prisma.product.findFirst({ where: { name: data.name } });
-  //         if (existingProduct && existingProduct.id !== id) return null;
-  //         const productFromDb = await prisma.product.findUnique({ where: { id: id } });
-  //         if (!productFromDb) return null;
+  getRoomAvailable: async (
+    date: string,
+    night: number
+  ): Promise<RoomResponse[] | null> => {
+    try {
+      const startDate = new Date(date).toISOString()
+      const endDate = dayjs(date).add(night, 'day').toDate().toISOString()
+      const data = await prisma.room.findMany()
 
-  //         const updatedProduct = await prisma.product.update({
-  //             where: { id: id },
-  //             data: {
-  //                 name: data.name || productFromDb.name,
-  //                 description: data.description || productFromDb.description,
-  //                 price: data.price || productFromDb.price,
-  //                 category: data.category || productFromDb.category
-  //             }
-  //         });
+      const reservations = await prisma.reservation.findMany({
+        where: {
+          AND: [
+            {
+              checkinDate: {
+                gte: startDate,
+              },
+            },
+            {
+              checkoutDate: {
+                lte: endDate,
+              },
+            },
+          ],
+        },
+      })
 
-  //         if (updatedProduct) {
-  //             return updatedProduct;
-  //         } else {
-  //             return null;
-  //         }
-  //     } catch (error) {
-  //         logger.error(error);
-  //         return null;
-  //     } finally {
-  //         await prisma.$disconnect();
-  //     }
-  // }
-  // ,
+      const result = data.filter((item) => {
+        return !reservations.some(
+          (reservation) => reservation.roomId === item.roomId
+        )
+      })
+      return result
+    } catch (error) {
+      logger.error(error)
+      return null
+    }
+  },
 }

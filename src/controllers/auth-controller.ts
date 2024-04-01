@@ -55,17 +55,17 @@ export const AuthController = {
           .json({
             success: false,
             statusCode: 401,
-            message: 'Invalid credentials',
+            message: 'User not found',
           })
       }
-      const isValid = compare(value.password, user.passwordHash)
+      const isValid = await compare(value.password, user.passwordHash)
       if (!isValid) {
         return res
           .status(401)
           .json({
             success: false,
             statusCode: 401,
-            message: 'Invalid credentials',
+            message: 'Password is incorrect',
           })
       }
       const userResponse = {

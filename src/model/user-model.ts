@@ -1,7 +1,6 @@
 export type UserResponse = {
   userId: string
   username: string
-  passwordHash: string
   name: string
   email: string
   phoneNumber: string

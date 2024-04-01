@@ -41,4 +41,36 @@ export const RoomController = {
       next(error)
     }
   },
+  GET_ROOM_AVAILABLE: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { query } = req
+    const { date = new Date(), night = 1 } = query
+
+    try {
+      const data = await RoomService.getRoomAvailable(
+        date.toString(),
+        Number(night)
+      )
+      if (data) {
+        return res.status(200).json({
+          success: true,
+          statusCode: 200,
+          message: 'Room found',
+          data: data,
+        })
+      } else {
+        return res.status(404).json({
+          success: false,
+          statusCode: 404,
+          message: 'Room not found',
+        })
+      }
+    } catch (error) {
+      logger.error(error)
+      next(error)
+    }
+  },
 }

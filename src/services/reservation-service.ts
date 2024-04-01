@@ -7,7 +7,7 @@ export const ReservationService = {
   isRoomAvailable: async (
     roomId: string,
     checkinDate: Date,
-    checkoutDate: Date 
+    checkoutDate: Date
   ): Promise<boolean> => {
     try {
       // เช็คว่าห้องว่างในช่วงเวลาที่กำหนดหรือไม่
@@ -17,12 +17,12 @@ export const ReservationService = {
           AND: [
             {
               checkinDate: {
-                lt: checkinDate,
+                gte: new Date(checkinDate),
               },
             },
             {
               checkoutDate: {
-                gt: checkoutDate,
+                lte: new Date(checkoutDate),
               },
             },
           ],
@@ -39,7 +39,10 @@ export const ReservationService = {
     roomId: string,
     userId: string,
     checkinDate: Date,
-    checkoutDate: Date 
+    checkoutDate: Date,
+    otherName: string,
+    otherPhone: string,
+    otherEmail: string
   ): Promise<any> => {
     try {
       // ทำการจองห้อง
@@ -51,6 +54,26 @@ export const ReservationService = {
           checkoutDate: checkoutDate,
           createdAt: new Date(),
           reservationId: uuidv7(),
+          otherName,
+          otherPhone,
+          otherEmail,
+        },
+      })
+      return reservation
+    } catch (error) {
+      console.error(`Error making reservation: ${error}`)
+      return null
+    }
+  },
+  getReservation: async (userId: string): Promise<any> => {
+    try {
+      // ทำการจองห้อง
+      const reservation = await prisma.reservation.findMany({
+        where: {
+          userId: userId,
+        },
+        include: {
+          room: true,
         },
       })
       return reservation

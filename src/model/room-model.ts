@@ -20,3 +20,6 @@ export type RoomQuery = {
   capacity?: string
   limit?: number
 }
+export type DateQuery = {
+  year?: number
+}
