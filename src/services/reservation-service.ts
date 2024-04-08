@@ -16,13 +16,13 @@ export const ReservationService = {
           roomId: roomId,
           AND: [
             {
-              checkinDate: {
-                gte: new Date(checkinDate),
+              checkinDate: { //1
+                lte: new Date(checkinDate), //3
               },
             },
             {
-              checkoutDate: {
-                lte: new Date(checkoutDate),
+              checkoutDate: {//5
+                gte: new Date(checkoutDate), //4
               },
             },
           ],
